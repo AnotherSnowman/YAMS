@@ -5,7 +5,7 @@ Yet Another Movie Suggestor.
 - TMDB API key
 - IMDB data dump [TODO]
 
-Nice to have, for getting actor role images:
+Nice to have, for including actor role images:
 - Google Custom Search JSON API key & Programmable Search Engine instance
 - and / or Bing Search API key
 

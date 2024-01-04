@@ -18,3 +18,5 @@ Nice to have, for including actor role images:
 6. Start the app, e.g. through 'npm start' from within the root folder.
 
 ...
+
+Some addition..

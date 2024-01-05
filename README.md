@@ -1,5 +1,8 @@
 # YAMS
-Yet Another Movie Suggestor.
+Yet Another Movie Suggestor. <br>
+The user keeps rating suggested movies and actors. _Woah!_ <br>
+After a few rounds, YAMS will definitely come up with some gems: Unseen, unpopular, yet critically acclaimed movies starring dozens of beloved actors.<br><br>
+<img src="https://github.com/AnotherSnowman/YAMS/assets/153401230/56f84c56-c05d-4468-8f2a-1b336865f2b9" width="150" />
 
 ## Prerequisites
 - TMDB API key
@@ -12,11 +15,8 @@ Nice to have, for including actor role images:
 ## Quick Start: Deployment
 1. Download the code / clone the rep
 2. Add library dependencies through npm [TODO]
-3. Populate [File X] with your API keys (if you don't want to add a Google or Bing API key, set the respective constants to '')
-4. Download the IMDB data dumps and save the unzipped files to [LOCATION]
-5. (Optional) In [File X], add the database backend* address where you host this_Django_app[LINK NEEDED] to save your progress. See more [BELOW].
+3. Populate the .env file with your API keys (if you don't want to add a Google or Bing API key, set the respective constants to '')
+4. Download the IMDB data dumps and save the unzipped files to [TODO]
+5. (Optional) In the .env file, add the address of your this_Django_app[LINK NEEDED] database backend. See more below. [TODO]
 6. Start the app, e.g. through 'npm start' from within the root folder.
-
 ...
-
-Some addition..

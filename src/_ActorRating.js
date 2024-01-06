@@ -1,14 +1,13 @@
 import './App.css';
-// import { Tooltip } from 'react-tooltip';
 import { useEffect, useState } from "react";
 
-import Button from '@mui/joy/Button';
 import { Box, Container } from '@mui/system';
-import Grid from '@mui/joy/Grid';
 import InfoIcon from '@mui/icons-material/Info';
+import Button from '@mui/joy/Button';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
+import Grid from '@mui/joy/Grid';
 import Radio from '@mui/joy/Radio';
 import Alert from '@mui/joy/Alert';
 import RadioGroup from '@mui/joy/RadioGroup';
@@ -23,8 +22,22 @@ function ActorCard({ actor, allChanges }) {
 
     const [ratingValue, setRatingValue] = useState("0");
     const [actorImageURLs, setActorImageURLs] = useState([]);
+    const [rolesInSeenMovies, setRolesInSeenMovies] = useState(() => {
+        let rolesToBePushed = [];
+        actor.roles.forEach((role) => {
+            if (role.movieDetails.seen) {
+                const movieRoleTuple = {
+                    movie: role.movieDetails.title,
+                    role: role.role
+                };
+                rolesToBePushed.push(movieRoleTuple);
+                if (role.imageUrl !== "") { setActorImageURLs([...actorImageURLs, role.imageUrl]) }
+            };
+        })
+        return rolesToBePushed;
+    });
 
-    const queryActorImagesAPI = false;
+    const queryActorImagesAPI = true;
 
     function handleRatingChange(event) {
         let newRatingValue = ratingValue;
@@ -35,11 +48,11 @@ function ActorCard({ actor, allChanges }) {
         if (actor.imageUrl) { allChanges.images[actor.id] = actor.imageUrl };
     }
 
-    async function searchForActorRoleImages(role) {
+    async function searchForActorRoleImages(searchTerm) {
         //Nice-to-have: Add interaction to let user switch between roles / between images of a role.
         //TODO: Put " " around role name to improve image search algorithm.
         //TODO: !!!!!!!!! De-couple and move into useEffect to avoid double-execution on re-render.
-        const searchResults = await (apiCallForRoleImages(role));
+        const searchResults = await (apiCallForRoleImages(searchTerm));
         console.log("===== Google API contacted =====");
         let extractedImages = [];
         for (const searchResult of searchResults) {
@@ -49,16 +62,11 @@ function ActorCard({ actor, allChanges }) {
         setActorImageURLs(extractedImages);
     }
 
-    let rolesInSeenMovies = [];
-    actor.roles.forEach((role) => {
-        if (role.movieDetails.seen) {
-            rolesInSeenMovies.push(role.movieDetails.title + ' (' + role.role + ')')
-            if (role.imageUrl !== "") { setActorImageURLs([...actorImageURLs, role.imageUrl]) }
+    useEffect(() => {
+        if (!(actorImageURLs.length) && rolesInSeenMovies && queryActorImagesAPI) {
+            searchForActorRoleImages(rolesInSeenMovies[0].role + " (" + rolesInSeenMovies[0].movie + ")");
         };
-    })
-    if (!(actorImageURLs.length) && rolesInSeenMovies && queryActorImagesAPI) {
-        searchForActorRoleImages(rolesInSeenMovies[0]);
-    };
+    }, [actorImageURLs, queryActorImagesAPI, rolesInSeenMovies]);
 
     return (
         <Grid container spacing={2} sx={{ p: 2, border: '1px dashed lightgrey' }}>
@@ -71,30 +79,35 @@ function ActorCard({ actor, allChanges }) {
                 <Box sx={{ pb: 2 }}>
                     <strong>{actor.name}</strong><br />
                     <span>Seen in: <br />
-                        {rolesInSeenMovies.map(roleInMovie =>
-                            <span key={roleInMovie}>&#171; {roleInMovie}<br /></span>
+                        {rolesInSeenMovies.map((roleInMovie, index) => {
+                            return <p key={roleInMovie}>
+                                <span>{roleInMovie.movie}:</span>
+                                <span style={{display: 'Block'}}>{roleInMovie.role}</span>
+                                <br></br>
+                                </p>
+                        }
                         )}
-                    </span>
-                </Box>
-                <Box sx={{ pb: 2 }}>
-                    <FormControl>
-                        <FormLabel><strong>Rating:</strong></FormLabel>
-                        <RadioGroup
-                            onChange={(event) => handleRatingChange(event, actor.id)}
-                            value={ratingValue}
-                            name="actor-rating-buttons-group"
-                            sx={{ fontWeight: 'bold' }}
-                        >
-                            <Radio value="5" label="❤️‍🔥" sx={{ color: 'forestgreen' }} />
-                            <Radio value="4" label="Good" sx={{ color: 'lightgreen' }} />
-                            <Radio value="3" label="Okayish" sx={{ color: 'orange' }} />
-                            <Radio value="2" label="Annoying" sx={{ color: 'red' }} />
-                            <Radio value="1" label="Don't remember.." sx={{ color: 'grey' }} />
-                        </RadioGroup>
-                    </FormControl>
-                </Box>
-            </Grid>
+                </span>
+            </Box>
+            <Box sx={{ pb: 2 }}>
+                <FormControl>
+                    <FormLabel><strong>Rating:</strong></FormLabel>
+                    <RadioGroup
+                        onChange={(event) => handleRatingChange(event, actor.id)}
+                        value={ratingValue}
+                        name="actor-rating-buttons-group"
+                        sx={{ fontWeight: 'bold' }}
+                    >
+                        <Radio value="5" label="❤️‍🔥" sx={{ color: 'forestgreen' }} />
+                        <Radio value="4" label="Good" sx={{ color: 'lightgreen' }} />
+                        <Radio value="3" label="Okayish" sx={{ color: 'orange' }} />
+                        <Radio value="2" label="Annoying" sx={{ color: 'red' }} />
+                        <Radio value="1" label="Don't remember.." sx={{ color: 'grey' }} />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
         </Grid>
+        </Grid >
     )
 }
 

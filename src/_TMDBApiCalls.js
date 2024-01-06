@@ -4,7 +4,7 @@ const baseURL = 'https://api.themoviedb.org/3/';
 
 function tmdbCall(extraParams = {}) {
     let params = {
-        api_key: process.env.TMDB_API_KEY
+        api_key: process.env.REACT_APP_TMDB_API_KEY
     };
     if (extraParams) {
         Object.keys(extraParams).forEach(extraParamKey => {

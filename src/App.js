@@ -1,11 +1,10 @@
 import './App.css';
 import ActorRatingView from './_ActorRating';
 import { CssVarsProvider } from '@mui/joy/styles';
-import { Box, Container } from '@mui/system';
+import { Box } from '@mui/system';
 import CssBaseline from '@mui/joy/CssBaseline';
 import { useEffect, useState } from "react";
 import { getStoredMovies, getStoredRoles, getStoredActors } from './_DbBackendApiCalls';
-import { getTMDBActorMovies } from './_TMDBApiCalls';
 
 function App() {
 
@@ -15,7 +14,7 @@ function App() {
   const [storedRoles, setStoredRoles] = useState([]);
   const [storedDataFetched, setStoredDataFetched] = useState(false);
 
-  // Get current state from database
+  // Get current state from database -OR- fill state with sample data
   useEffect(() => {
     async function getDatabaseState() {
       try {
@@ -28,33 +27,321 @@ function App() {
         console.error(error);
       }
     }
-    getDatabaseState();
+
+    if (process.env.REACT_APP_DATABASE_ADDRESS) {
+      getDatabaseState();
+    }
+    else {
+      setStoredRoles(
+        [
+          {
+            "id": 1,
+            "role": "Cobb",
+            "knownFor": true,
+            "imageUrl": "",
+            "actor": 1,
+            "movie": 1,
+            "movieDetails": {
+              "id": 1,
+              "title": "Inception",
+              "imdbId": "tt1375666",
+              "tmdbId": "27205",
+              "hasLikedActors": false,
+              "seen": true,
+              "userRating": 4,
+              "generalRating": 8,
+              "year": 2010,
+              "director": "Christopher Nolan",
+              "popularity": 90,
+              "likelihood": 0,
+              "actors": [
+                1
+              ]
+            }
+          },
+          {
+            "id": 2,
+            "role": "Freddie",
+            "knownFor": true,
+            "imageUrl": "",
+            "actor": 1,
+            "movie": 3,
+            "movieDetails": {
+              "id": 3,
+              "title": "Shutter Island",
+              "imdbId": "",
+              "tmdbId": "11324",
+              "hasLikedActors": false,
+              "seen": true,
+              "userRating": 0,
+              "generalRating": 8,
+              "year": 2010,
+              "director": "Christopher Nolan",
+              "popularity": 93,
+              "likelihood": 0,
+              "actors": [
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "id": 3,
+            "role": "Dolores Chanal",
+            "knownFor": false,
+            "imageUrl": "",
+            "actor": 2,
+            "movie": 3,
+            "movieDetails": {
+              "id": 3,
+              "title": "Shutter Island",
+              "imdbId": "",
+              "tmdbId": "11324",
+              "hasLikedActors": false,
+              "seen": true,
+              "userRating": 0,
+              "generalRating": 8,
+              "year": 2010,
+              "director": "Christopher Nolan",
+              "popularity": 93,
+              "likelihood": 0,
+              "actors": [
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "id": 4,
+            "role": "Mrs. Feedy",
+            "knownFor": false,
+            "imageUrl": "",
+            "actor": 2,
+            "movie": 2,
+            "movieDetails": {
+              "id": 2,
+              "title": "The Shawshank Redemption",
+              "imdbId": "tt0111161",
+              "tmdbId": "278",
+              "hasLikedActors": true,
+              "seen": true,
+              "userRating": 2,
+              "generalRating": 9,
+              "year": 1994,
+              "director": "Frank Darabont",
+              "popularity": 95,
+              "likelihood": 0,
+              "actors": [
+                2
+              ]
+            }
+          }
+        ]
+      );
+      setStoredActors(
+        [
+          {
+            "id": 1,
+            "name": "Leonardo DiCaprio",
+            "imdbId": "nm0000138",
+            "tmdbId": "6193",
+            "userRating": 0,
+            "popularity": 95,
+            "likelihood": 0,
+            "roles": [
+              {
+                "id": 1,
+                "role": "Cobb",
+                "knownFor": true,
+                "imageUrl": "",
+                "actor": 1,
+                "movie": 1,
+                "movieDetails": {
+                  "id": 1,
+                  "title": "Inception",
+                  "imdbId": "tt1375666",
+                  "tmdbId": "27205",
+                  "hasLikedActors": false,
+                  "seen": true,
+                  "userRating": 4,
+                  "generalRating": 8,
+                  "year": 2010,
+                  "director": "Christopher Nolan",
+                  "popularity": 90,
+                  "likelihood": 0,
+                  "actors": [
+                    1
+                  ]
+                }
+              },
+              {
+                "id": 2,
+                "role": "Freddie",
+                "knownFor": true,
+                "imageUrl": "",
+                "actor": 1,
+                "movie": 3,
+                "movieDetails": {
+                  "id": 3,
+                  "title": "Shutter Island",
+                  "imdbId": "",
+                  "tmdbId": "11324",
+                  "hasLikedActors": false,
+                  "seen": false,
+                  "userRating": 0,
+                  "generalRating": 8,
+                  "year": 2010,
+                  "director": "Christopher Nolan",
+                  "popularity": 93,
+                  "likelihood": 0,
+                  "actors": [
+                    1,
+                    2
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Lisa Kudrow",
+            "imdbId": "nm0001435",
+            "tmdbId": "14406",
+            "userRating": 0,
+            "popularity": 85,
+            "likelihood": 0,
+            "roles": [
+              {
+                "id": 3,
+                "role": "Dolores Chanal",
+                "knownFor": false,
+                "imageUrl": "",
+                "actor": 2,
+                "movie": 3,
+                "movieDetails": {
+                  "id": 3,
+                  "title": "Shutter Island",
+                  "imdbId": "",
+                  "tmdbId": "11324",
+                  "hasLikedActors": false,
+                  "seen": false,
+                  "userRating": 0,
+                  "generalRating": 8,
+                  "year": 2010,
+                  "director": "Christopher Nolan",
+                  "popularity": 93,
+                  "likelihood": 0,
+                  "actors": [
+                    1,
+                    2
+                  ]
+                }
+              },
+              {
+                "id": 4,
+                "role": "Mrs. Feedy",
+                "knownFor": false,
+                "imageUrl": "",
+                "actor": 2,
+                "movie": 2,
+                "movieDetails": {
+                  "id": 2,
+                  "title": "The Shawshank Redemption",
+                  "imdbId": "tt0111161",
+                  "tmdbId": "278",
+                  "hasLikedActors": true,
+                  "seen": true,
+                  "userRating": 2,
+                  "generalRating": 9,
+                  "year": 1994,
+                  "director": "Frank Darabont",
+                  "popularity": 95,
+                  "likelihood": 0,
+                  "actors": [
+                    2
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      );
+      setStoredMovies(
+        [
+          {
+            "id": 1,
+            "title": "Inception",
+            "imdbId": "tt1375666",
+            "tmdbId": "27205",
+            "hasLikedActors": false,
+            "seen": true,
+            "userRating": 4,
+            "generalRating": 8,
+            "year": 2010,
+            "director": "Christopher Nolan",
+            "popularity": 90,
+            "likelihood": 0,
+            "actors": [
+              1
+            ]
+          },
+          {
+            "id": 2,
+            "title": "The Shawshank Redemption",
+            "imdbId": "tt0111161",
+            "tmdbId": "278",
+            "hasLikedActors": true,
+            "seen": true,
+            "userRating": 2,
+            "generalRating": 9,
+            "year": 1994,
+            "director": "Frank Darabont",
+            "popularity": 95,
+            "likelihood": 0,
+            "actors": [
+              2
+            ]
+          },
+          {
+            "id": 3,
+            "title": "Shutter Island",
+            "imdbId": "",
+            "tmdbId": "11324",
+            "hasLikedActors": true,
+            "seen": true,
+            "userRating": 7,
+            "generalRating": 8,
+            "year": 2010,
+            "director": "Christopher Nolan",
+            "popularity": 93,
+            "likelihood": 0,
+            "actors": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": 4,
+            "title": "Pulp Fiction",
+            "imdbId": "tt0110912",
+            "tmdbId": "680",
+            "hasLikedActors": false,
+            "seen": false,
+            "userRating": 2,
+            "generalRating": 8,
+            "year": 1994,
+            "director": "Quentin Tarantino",
+            "popularity": 88,
+            "likelihood": 0,
+            "actors": []
+          }
+        ]
+      );
+      setStoredDataFetched(true);
+    }
+
     return () => { };
   }, []);
-
-
-  // Test & Mockup section
-  const testMovie = {
-    id: 27205,
-    title: "Inception"
-  }
-  const testActor = {
-    id: 6193,
-    name: "Leonardo DiCaprio"
-  }
-
-  /* TODO - Next steps: 
-  1. call ActorMovies from TMDB ✅
-  2. filter response with genre Blacklist / Whitelist ✅
-  2.1 calculate likelihood for already stored movies ✅
-  2.2 create storedMovies entries for new movies
-  3. call MovieDetails from TMDB to get all actors for the filtered movies 
-  4. sort list by actor popularity 
-  5. filter out Top-20 actors
-  6. create db entries for the queried movies, actors and movie-actor relationships
-  6.1 check if the entry already exists ✅
-  6.2 create db entries
-  */
 
 
   return (

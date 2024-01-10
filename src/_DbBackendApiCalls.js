@@ -1,7 +1,10 @@
 import axios from "axios";
 
-const apiUrl = 'http://localhost:8000/imdb/api/';
+const DATABASE_ADDRESS = process.env.REACT_APP_DATABASE_ADDRESS;
 
+// if (process.env.REACT_APP_DATABASE_ADDRESS) {
+//   DATABASE_ADDRESS = process.env.REACT_APP_DATABASE_ADDRESS;
+// }
 
 function renameKeys(obj) {
   return Object.keys(obj).reduce((acc, key) => {
@@ -17,7 +20,7 @@ function renameKeys(obj) {
 
 export async function getStoredActors() {
   try {
-    const response = await axios.get(apiUrl + 'actors/');
+    const response = await axios.get(DATABASE_ADDRESS + 'actors/');
     const parsedData = response.data.map(item => {
       return renameKeys(item);
     })
@@ -28,10 +31,9 @@ export async function getStoredActors() {
   }
 }
 
-
 export async function getStoredMovies() {
   try {
-    const response = await axios.get(apiUrl + 'movies/');
+    const response = await axios.get(DATABASE_ADDRESS + 'movies/');
     const parsedData = response.data.map(item => {
       return renameKeys(item);
     })
@@ -43,42 +45,24 @@ export async function getStoredMovies() {
 }
 
 export async function getStoredRoles() {
-  try {
-    const response = await axios.get(apiUrl + 'roles/');
-    const parsedData = response.data.map(item => {
-      return renameKeys(item);
-    })
-    return parsedData;
-  } catch (error) {
-    console.error('Error getting roles from db:', error.message);
-    throw error;
-  }
+    try {
+      const response = await axios.get(DATABASE_ADDRESS + 'roles/');
+      const parsedData = response.data.map(item => {
+        return renameKeys(item);
+      })
+      return parsedData;
+    } catch (error) {
+      console.error('Error getting roles from db:', error.message);
+      throw error;
+    }
 }
 
 async function getStoredRolesForActor(actorId) {
-  try {
-    const response = await axios.get(apiUrl + `actors/${actorId}/roles`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error getting roles for actor ${actorId}:`, error.message);
-    throw error;
-  }
-}
-
-
-export async function getStoredActorsAndRoles() {
-  try {
-    const actors = await getStoredActors();
-
-    for (const actor of actors) {
-      const roles = await getStoredRolesForActor(actor.id);
-
-      // Print information about the actor and their roles
-      console.log(`Actor: ${actor.name}`);
-      console.log('Roles:', roles);
-      console.log('------------------------');
+    try {
+      const response = await axios.get(DATABASE_ADDRESS + `actors/${actorId}/roles`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error getting roles for actor ${actorId}:`, error.message);
+      throw error;
     }
-  } catch (error) {
-    console.error('Error:', error.message);
-  }
 }

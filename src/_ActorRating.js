@@ -11,6 +11,8 @@ import Grid from '@mui/joy/Grid';
 import Radio from '@mui/joy/Radio';
 import Alert from '@mui/joy/Alert';
 import RadioGroup from '@mui/joy/RadioGroup';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
 import Autocomplete from '@mui/joy/Autocomplete';
 import Typography from '@mui/joy/Typography';
 
@@ -18,7 +20,7 @@ import { getTMDBActorMovies } from './_TMDBApiCalls';
 import { apiCallForRoleImages } from './_ImageSearchApiCalls';
 
 
-function ActorCard({ actor, allChanges }) {
+export function ActorCard({ actor, allChanges }) {
 
     const [ratingValue, setRatingValue] = useState("0");
     const [actorImageURLs, setActorImageURLs] = useState([]);
@@ -37,7 +39,8 @@ function ActorCard({ actor, allChanges }) {
         return rolesToBePushed;
     });
 
-    const queryActorImagesAPI = true;
+    let queryActorImagesAPI = true;
+    if (process.env.REACT_APP_EXCLUDE_IMAGE_API_SEARCH) { queryActorImagesAPI = false; }
 
     function handleRatingChange(event) {
         let newRatingValue = ratingValue;
@@ -51,7 +54,6 @@ function ActorCard({ actor, allChanges }) {
     async function searchForActorRoleImages(searchTerm) {
         //Nice-to-have: Add interaction to let user switch between roles / between images of a role.
         //TODO: Put " " around role name to improve image search algorithm.
-        //TODO: !!!!!!!!! De-couple and move into useEffect to avoid double-execution on re-render.
         const searchResults = await (apiCallForRoleImages(searchTerm));
         console.log("===== Google API contacted =====");
         let extractedImages = [];
@@ -63,7 +65,7 @@ function ActorCard({ actor, allChanges }) {
     }
 
     useEffect(() => {
-        if (!(actorImageURLs.length) && rolesInSeenMovies && queryActorImagesAPI) {
+        if (!(actorImageURLs.length) && rolesInSeenMovies.length && queryActorImagesAPI) {
             searchForActorRoleImages(rolesInSeenMovies[0].role + " (" + rolesInSeenMovies[0].movie + ")");
         };
     }, [actorImageURLs, queryActorImagesAPI, rolesInSeenMovies]);
@@ -78,35 +80,37 @@ function ActorCard({ actor, allChanges }) {
             <Grid xs={12} md={7}>
                 <Box sx={{ pb: 2 }}>
                     <strong>{actor.name}</strong><br />
-                    <span>Seen in: <br />
+                    <span>Seen in:
+                    </span>
+                    <List marker="disc">
                         {rolesInSeenMovies.map((roleInMovie, index) => {
-                            return <p key={roleInMovie}>
-                                <span>{roleInMovie.movie}:</span>
-                                <span style={{display: 'Block'}}>{roleInMovie.role}</span>
-                                <br></br>
-                                </p>
+                            return <ListItem key={roleInMovie.movie + roleInMovie.role}>
+                                <span>{roleInMovie.movie}: </span>
+                                <span style={{ display: 'Inline-Block' }}>{roleInMovie.role}</span>
+                            </ListItem>
                         }
                         )}
-                </span>
-            </Box>
-            <Box sx={{ pb: 2 }}>
-                <FormControl>
-                    <FormLabel><strong>Rating:</strong></FormLabel>
-                    <RadioGroup
-                        onChange={(event) => handleRatingChange(event, actor.id)}
-                        value={ratingValue}
-                        name="actor-rating-buttons-group"
-                        sx={{ fontWeight: 'bold' }}
-                    >
-                        <Radio value="5" label="❤️‍🔥" sx={{ color: 'forestgreen' }} />
-                        <Radio value="4" label="Good" sx={{ color: 'lightgreen' }} />
-                        <Radio value="3" label="Okayish" sx={{ color: 'orange' }} />
-                        <Radio value="2" label="Annoying" sx={{ color: 'red' }} />
-                        <Radio value="1" label="Don't remember.." sx={{ color: 'grey' }} />
-                    </RadioGroup>
-                </FormControl>
-            </Box>
-        </Grid>
+
+                    </List>
+                </Box>
+                <Box sx={{ pb: 2 }}>
+                    <FormControl>
+                        <FormLabel><strong>Rating:</strong></FormLabel>
+                        <RadioGroup
+                            onChange={(event) => handleRatingChange(event, actor.id)}
+                            value={ratingValue}
+                            name="actor-rating-buttons-group"
+                            sx={{ fontWeight: 'bold' }}
+                        >
+                            <Radio value="5" label="❤️‍🔥" sx={{ color: 'forestgreen' }} />
+                            <Radio value="4" label="Good" sx={{ color: 'lightgreen' }} />
+                            <Radio value="3" label="Okayish" sx={{ color: 'orange' }} />
+                            <Radio value="2" label="Annoying" sx={{ color: 'red' }} />
+                            <Radio value="1" label="Don't remember.." sx={{ color: 'grey' }} />
+                        </RadioGroup>
+                    </FormControl>
+                </Box>
+            </Grid>
         </Grid >
     )
 }
@@ -120,7 +124,8 @@ export default function ActorRatingView({
 
     const [unratedActors, setUnratedActors] = useState(getUnratedActors());
     const [prevStoredActors, setPrevStoredActors] = useState(storedActors);
-    if (prevStoredActors !== storedActors) {
+
+    if (prevStoredActors !== storedActors) {  // Needed to enable re-init of 'unratedActors' when storedActors has changed
         setPrevStoredActors(storedActors);
         setUnratedActors(getUnratedActors());
     }

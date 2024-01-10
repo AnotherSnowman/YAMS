@@ -14,7 +14,7 @@ Nice to have, for including actor role images:
 
 ## Quick Start: Deployment
 1. Download the code / clone the rep
-2. Add library dependencies through npm [TODO]
+2. Run npm install inside the root folder to install all dependencies as declared in /package.json
 3. Populate the .env file with your API keys (if you don't want to add a Google or Bing API key, set the respective constants to '')
 4. Download the IMDB data dumps and save the unzipped files to [TODO]
 5. (Optional) In the .env file, add the address of your this_Django_app[LINK NEEDED] database backend. See more below. [TODO]

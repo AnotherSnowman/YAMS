@@ -4,7 +4,7 @@ The user keeps rating suggested movies and actors. _Woah!_ <br>
 After a few rounds, YAMS will definitely come up with some gems: Unseen, unpopular, yet critically acclaimed movies starring dozens of beloved actors.<br><br>
 <img src="https://github.com/AnotherSnowman/YAMS/assets/153401230/56f84c56-c05d-4468-8f2a-1b336865f2b9" width="150" />
 
-## Dare to try it out?!
+## Dare to try?!
 ### Prerequisites
 - TMDB API key
 - IMDB data dump [TODO]
@@ -20,3 +20,10 @@ Nice to have, for including actor role images:
 4. Download the IMDB data dumps and save the unzipped files to [TODO]
 5. (Optional) In the .env file, add the address of your this_Django_app[LINK NEEDED] database backend. See more below. [TODO]
 6. Start the app, e.g. through 'npm start' from within the root folder.
+
+## Technologies / Libraries included
+- React / NodeJS (Create-React-App bundle)
+- MUI Joy
+- Axios
+- Zustand (to-be-done)
+- Jest & RTL (to-be-ditched)
